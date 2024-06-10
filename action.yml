@@ -1,6 +1,6 @@
 name: 'Push2SharePoint'
 description: 'Upload files to a SharePoint document library'
-author: 'sjultra inc.'
+author: Hellbender Inc.
 branding:
   icon: 'upload-cloud'
   color: 'blue'
@@ -24,10 +24,11 @@ runs:
   using: 'composite'
   steps:
     - name: Checkout reusable action repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
-        repository: 'sjultra/Push2Sharepoint' # Replace with the reusable action's owner and repo name
-        ref: 'v3.4' # Replace with the desired branch, commit, or tag
+        repository: 'HellbenderInc/Push2Sharepoint' # Replace with the reusable action's owner and repo name
+        # ref: 'v4' # Set to branch name, commit, or tag
+        ref: 'main'
         path: './action'
         
     - name: Install Office365-REST-Python-Client
@@ -36,10 +37,6 @@ runs:
       
     - name: Check package version
       run: pip show Office365-REST-Python-Client
-      shell: bash
-      
-    - name: List files in repository
-      run: ls -R
       shell: bash
 
     - name: Run script

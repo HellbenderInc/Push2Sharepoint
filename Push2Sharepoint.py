@@ -69,6 +69,14 @@ class SharePointFileManager:
                 logging.info(f"Creating folder: {current_folder_url}")
                 self.context.web.folders.add(current_folder_url).execute_query()
             
+    def print_upload_progress(offset):
+        # type: (int) -> None
+        file_size = os.path.getsize(local_path)
+        print(
+            "Uploaded '{0}' bytes from '{1}'...[{2}%]".format(
+                offset, file_size, round(offset / file_size * 100, 2)
+            )
+        )
 
     #Function to upload docx documents that are not present in SharePoint.
     def upload_documents_not_present(self):
@@ -84,7 +92,9 @@ class SharePointFileManager:
                     file_content = content_file.read()
 
                 dir, name = os.path.split(remote_path)
-                self.context.web.get_folder_by_server_relative_url(dir).upload_file(name, file_content).execute_query()
+                # self.context.web.get_folder_by_server_relative_url(dir).upload_file(name, file_content).execute_query()
+                with open(document, "rb") as f:
+                    self.context.web.get_folder_by_server_relative_url(dir).files.create_upload_session(f, 10000000, name).execute_query()
 
     # Function to upload document even if the document exists.
     def upload_documents(self):
@@ -97,7 +107,9 @@ class SharePointFileManager:
                 file_content = content_file.read()
 
             dir, name = os.path.split(remote_path)
-            self.context.web.get_folder_by_server_relative_url(dir).upload_file(name, file_content).execute_query()
+            # self.context.web.get_folder_by_server_relative_url(dir).upload_file(name, file_content).execute_query()
+            with open(document, "rb") as f:
+                self.context.web.get_folder_by_server_relative_url(dir).files.create_upload_session(f, 10000000, name).execute_query()
 
     #Function that will be called in Main.py in order to create folder and upload documents
     def execute(self, folder_name, existing_documents_list, documents=[]):
